@@ -30,5 +30,12 @@ export default class Runsh extends Plugin {
 const clickHandler = async (cmd: string, vaultPath: string) => {
 	new Notice("Running: " + cmd);
 
-	spawn(cmd, { shell: true, cwd: vaultPath, stdio: "pipe" });
+	const res = spawn(cmd, { shell: true, cwd: vaultPath, stdio: "pipe" });
+
+	let output = "";
+	res.stdout.on("data", (data) => (output += data.toString()));
+	res.stderr.on("data", (data) => (output += data.toString()));
+
+	res.on("close", () => new Notice(output ? output : "Command completed"));
+	res.on("error", (error) => new Notice("Error: " + error.message));
 };
