@@ -1,9 +1,15 @@
-import { MarkdownPostProcessorContext, Plugin, Notice } from "obsidian";
+import { MarkdownPostProcessorContext, Plugin, Notice, FileSystemAdapter } from "obsidian";
 import { spawn } from "child_process";
 
 export default class Runsh extends Plugin {
+	vaultPath: string;
+
 	async onload() {
 		this.registerMarkdownCodeBlockProcessor("runsh", this.processRunshBlock.bind(this));
+		const adapter = this.app.vault.adapter;
+		if (adapter instanceof FileSystemAdapter) {
+			this.vaultPath = adapter.getBasePath();
+		}
 	}
 
 	async processRunshBlock(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext) {
@@ -17,14 +23,12 @@ export default class Runsh extends Plugin {
 		// Add tooltip with command
 		button.setAttribute("title", cmd);
 
-		button.on("click", "button", () => {
-			clickHandler(cmd);
-		});
+		button.on("click", "button", () => clickHandler(cmd, this.vaultPath));
 	}
 }
 
-const clickHandler = async (cmd: string) => {
+const clickHandler = async (cmd: string, vaultPath: string) => {
 	new Notice("Running: " + cmd);
 
-	spawn(cmd, { shell: true, detached: true, stdio: "ignore" });
+	spawn(cmd, { shell: true, cwd: vaultPath, stdio: "pipe" });
 };
