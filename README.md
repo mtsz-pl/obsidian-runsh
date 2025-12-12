@@ -21,5 +21,6 @@ Text on a button
 ````
 
 # !!!WARNING!!!
+
 The plugin does not provide any security measures, so be careful with what you run.
 If you forgot the command you added to a note, you can quickly see it by hovering over the button.
