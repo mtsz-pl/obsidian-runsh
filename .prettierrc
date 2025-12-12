@@ -1,0 +1,14 @@
+{
+	"useTabs": true,
+	"tabWidth": 4,
+	"endOfLine": "lf",
+	"printWidth": 120,
+	"overrides": [
+		{
+			"files": [".eslintrc", ".babelrc"],
+			"options": {
+				"parser": "json"
+			}
+		}
+	]
+}
